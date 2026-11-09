@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="classic">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Зачётная книжка · Семина Ю. В.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ---------- ТЕМЫ ---------- */
+  [data-theme="classic"]{
+    --bg:#070b18; --surface:rgba(255,255,255,.045); --surface-2:rgba(255,255,255,.08);
+    --border:rgba(255,255,255,.09); --border-strong:rgba(255,255,255,.18);
+    --text:#eef2ff; --muted:#8b96b8;
+    --accent:#4f7cff; --accent-contrast:#050a18;
+    --accent-soft:rgba(79,124,255,.16);
+    --glow:rgba(79,124,255,.45); --glow-2:rgba(120,90,255,.22);
+  }
+  [data-theme="ocean"]{
+    --bg:#04131a; --surface:rgba(255,255,255,.045); --surface-2:rgba(255,255,255,.08);
+    --border:rgba(255,255,255,.09); --border-strong:rgba(255,255,255,.18);
+    --text:#e6fbff; --muted:#7fa3ad;
+    --accent:#2dd4bf; --accent-contrast:#03140f;
+    --accent-soft:rgba(45,212,191,.16);
+    --glow:rgba(45,212,191,.40); --glow-2:rgba(56,189,248,.22);
+  }
+  [data-theme="violet"]{
+    --bg:#0b0716; --surface:rgba(255,255,255,.05); --surface-2:rgba(255,255,255,.09);
+    --border:rgba(255,255,255,.10); --border-strong:rgba(255,255,255,.19);
+    --text:#f5efff; --muted:#a89bc4;
+    --accent:#a855f7; --accent-contrast:#0d0418;
+    --accent-soft:rgba(168,85,247,.17);
+    --glow:rgba(168,85,247,.42); --glow-2:rgba(236,72,153,.20);
+  }
+  [data-theme="sakura"]{
+    --bg:#170a12; --surface:rgba(255,255,255,.05); --surface-2:rgba(255,255,255,.09);
+    --border:rgba(255,255,255,.10); --border-strong:rgba(255,255,255,.19);
+    --text:#fff0f7; --muted:#c49aae;
+    --accent:#f472b6; --accent-contrast:#190612;
+    --accent-soft:rgba(244,114,182,.17);
+    --glow:rgba(244,114,182,.40); --glow-2:rgba(168,85,247,.20);
+  }
+  [data-theme="forest"]{
+    --bg:#06140f; --surface:rgba(255,255,255,.045); --surface-2:rgba(255,255,255,.08);
+    --border:rgba(255,255,255,.09); --border-strong:rgba(255,255,255,.18);
+    --text:#eafff5; --muted:#8fb8a5;
+    --accent:#34d399; --accent-contrast:#04140d;
+    --accent-soft:rgba(52,211,153,.16);
+    --glow:rgba(52,211,153,.40); --glow-2:rgba(132,204,22,.20);
+  }
+  [data-theme="sunset"]{
+    --bg:#170c06; --surface:rgba(255,255,255,.05); --surface-2:rgba(255,255,255,.09);
+    --border:rgba(255,255,255,.10); --border-strong:rgba(255,255,255,.19);
+    --text:#fff3e8; --muted:#c7a48b;
+    --accent:#fb923c; --accent-contrast:#190a02;
+    --accent-soft:rgba(251,146,60,.17);
+    --glow:rgba(251,146,60,.40); --glow-2:rgba(244,63,94,.20);
+  }
+  [data-theme="graphite"]{
+    --bg:#0c0e12; --surface:rgba(255,255,255,.05); --surface-2:rgba(255,255,255,.09);
+    --border:rgba(255,255,255,.10); --border-strong:rgba(255,255,255,.19);
+    --text:#eef1f6; --muted:#8792a3;
+    --accent:#94a3b8; --accent-contrast:#0a0d12;
+    --accent-soft:rgba(148,163,184,.16);
+    --glow:rgba(148,163,184,.30); --glow-2:rgba(100,116,139,.20);
+  }
+  [data-theme="light"]{
+    --bg:#f4f6fb; --surface:rgba(255,255,255,.78); --surface-2:rgba(255,255,255,.95);
+    --border:rgba(15,23,42,.08); --border-strong:rgba(15,23,42,.16);
+    --text:#0b1220; --muted:#5d6b8a;
+    --accent:#4f7cff; --accent-contrast:#ffffff;
+    --accent-soft:rgba(79,124,255,.12);
+    --glow:rgba(79,124,255,.25); --glow-2:rgba(120,90,255,.12);
+  }
+
+  /* ---------- БАЗА ---------- */
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    font-family:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100dvh;
+    display:flex;
+    justify-content:center;
+    padding:36px 16px 44px;
+    position:relative;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    transition:background .35s ease, color .35s ease;
+  }
+
+  body::before{
+    content:'';
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(120% 70% at 50% -12%, var(--glow), transparent 62%),
+      radial-gradient(90% 60% at 105% 105%, var(--glow-2), transparent 62%);
+    opacity:.55;
+    transition:opacity .35s ease;
+  }
+
+  .orbit{
+    position:fixed; left:50%; transform:translateX(-50%);
+    border-radius:50%; border:1px solid var(--border);
+    pointer-events:none; z-index:0; opacity:.5;
+  }
+  .orbit-1{ width:520px; height:520px; top:-215px; }
+  .orbit-2{ width:780px; height:780px; top:-345px; opacity:.28; }
+
+  .app{
+    position:relative; z-index:1;
+    width:100%; max-width:460px;
+  }
+  .app > *{ animation:rise .55s cubic-bezier(.2,.7,.3,1) both; }
+  .app > *:nth-child(2){ animation-delay:.06s }
+  .app > *:nth-child(3){ animation-delay:.11s }
+  .app > *:nth-child(4){ animation-delay:.16s }
+  .app > *:nth-child(5){ animation-delay:.21s }
+  .app > *:nth-child(6){ animation-delay:.26s }
+  .app > *:nth-child(7){ animation-delay:.31s }
+
+  @keyframes rise{
+    from{ opacity:0; transform:translateY(14px) }
+    to{ opacity:1; transform:none }
+  }
+
+  /* ---------- ШАПКА ---------- */
+  .hero{ text-align:center; padding:4px 0 26px; }
+
+  .logo{
+    font-size:19px; letter-spacing:.20em; font-weight:300;
+    text-transform:uppercase;
+  }
+  .logo span{ font-weight:800; color:var(--accent); }
+
+  .hero h1{
+    margin-top:18px;
+    font-size:29px; font-weight:700; letter-spacing:-.02em; line-height:1.15;
+  }
+  .hero p{
+    margin-top:9px; font-size:14px; line-height:1.5;
+    color:var(--muted);
+  }
+
+  /* ---------- КАРТОЧКА СТУДЕНТА ---------- */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:18px;
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    transition:background .35s ease, border-color .35s ease;
+  }
+
+  .card-head{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px;
+  }
+  .tag{
+    font-size:10.5px; font-weight:700;
+    letter-spacing:.15em; text-transform:uppercase;
+    color:var(--muted);
+  }
+  .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 10px var(--glow);
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:1; transform:scale(1) }
+    50%{ opacity:.45; transform:scale(.82) }
+  }
+
+  .student-grid{
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:15px 16px; margin-top:16px;
+  }
+  .field-full{ grid-column:1 / -1 }
+  .field-label{
+    display:block;
+    font-size:10px; font-weight:600; letter-spacing:.13em;
+    text-transform:uppercase; color:var(--muted);
+    margin-bottom:5px;
+  }
+  .field-value{
+    display:block; font-size:15px; font-weight:600; line-height:1.35;
+  }
+  .field-value.mono{
+    font-family:ui-monospace, 'SF Mono', 'JetBrains Mono', monospace;
+    font-size:17px; letter-spacing:.10em;
+    color:var(--accent);
+  }
+
+  /* ---------- СЕКЦИИ ---------- */
+  .section{ margin-top:28px }
+
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    padding:0 4px; margin-bottom:11px;
+  }
+  .section-head h2{
+    font-size:11.5px; font-weight:700;
+    letter-spacing:.17em; text-transform:uppercase;
+    color:var(--muted);
+  }
+  .section-head span{
+    font-size:11px; letter-spacing:.06em; color:var(--muted);
+    opacity:.8;
+  }
+
+  .list{ list-style:none; display:flex; flex-direction:column; gap:8px }
+
+  .row{
+    display:flex; align-items:center; gap:12px;
+    padding:13px 14px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    transition:transform .18s ease, background .25s ease, border-color .25s ease;
+  }
+  @media (hover:hover){
+    .row:hover{
+      transform:translateY(-1px);
+      background:var(--surface-2);
+      border-color:var(--border-strong);
+    }
+  }
+
+  .idx{
+    flex:none; width:22px; height:22px; border-radius:7px;
+    display:grid; place-items:center;
+    font-size:11px; font-weight:700;
+    color:var(--muted);
+    background:var(--surface-2);
+    border:1px solid var(--border);
+  }
+  .idx-check{
+    color:var(--accent);
+    background:var(--accent-soft);
+    border-color:transparent;
+    font-size:12px;
+  }
+
+  .row-title{
+    flex:1; min-width:0;
+    font-size:14px; font-weight:500; line-height:1.35;
+  }
+
+  .grade{
+    flex:none; width:32px; height:32px; border-radius:50%;
+    display:grid; place-items:center;
+    font-size:14.5px; font-weight:800;
+    border:1.5px solid var(--accent);
+  }
+  .grade-5{
+    background:var(--accent);
+    color:var(--accent-contrast);
+    box-shadow:0 0 20px var(--glow);
+  }
+  .grade-4{
+    background:transparent;
+    color:var(--accent);
+  }
+
+  .pill{
+    flex:none;
+    font-size:9.5px; font-weight:700;
+    letter-spacing:.09em; text-transform:uppercase;
+    color:var(--accent);
+    background:var(--accent-soft);
+    padding:5px 9px; border-radius:8px;
+  }
+
+  /* ---------- ИТОГ ---------- */
+  .summary{
+    margin-top:30px;
+    display:flex; align-items:center; gap:14px;
+    padding:16px 18px;
+    border-radius:18px;
+    background:var(--accent-soft);
+    border:1px solid var(--border-strong);
+    position:relative; overflow:hidden;
+  }
+  .summary::after{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(120% 150% at 100% 0%, var(--glow), transparent 62%);
+    opacity:.55;
+  }
+  .summary-icon{
+    flex:none; width:38px; height:38px; border-radius:50%;
+    display:grid; place-items:center;
+    background:var(--accent); color:var(--accent-contrast);
+    font-size:16px; font-weight:800;
+    box-shadow:0 0 24px var(--glow);
+    position:relative; z-index:1;
+  }
+  .summary-text{ position:relative; z-index:1 }
+  .summary-title{ font-size:15px; font-weight:700; letter-spacing:-.01em }
+  .summary-sub{ margin-top:3px; font-size:12px; color:var(--muted) }
+
+  /* ---------- ПЕРЕКЛЮЧАТЕЛЬ ТЕМ ---------- */
+  .themes{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:10px;
+    margin-top:30px;
+  }
+  .themes button{
+    width:22px; height:22px; border-radius:50%;
+    border:1px solid var(--border-strong);
+    background:var(--sw);
+    cursor:pointer;
+    padding:0;
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .themes button:hover{ transform:scale(1.12) }
+  .themes button[aria-pressed="true"]{
+    box-shadow:0 0 0 2px var(--bg), 0 0 0 3.5px var(--sw);
+    transform:scale(1.06);
+  }
+  .themes button:focus-visible{
+    outline:none;
+    box-shadow:0 0 0 2px var(--bg), 0 0 0 3.5px var(--accent);
+  }
+
+  .footnote{
+    margin-top:22px;
+    text-align:center;
+    font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--muted); opacity:.55;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation:none !important;
+      transition:none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="orbit orbit-1"></div>
+<div class="orbit orbit-2"></div>
+
+<main class="app">
+
+  <!-- ШАПКА -->
+  <header class="hero">
+    <div class="logo">Зачёт<span>ка</span></div>
+    <h1>Твоя сессия закрыта</h1>
+    <p>Семина Юлия Вячеславовна · группа ХХ-126</p>
+  </header>
+
+  <!-- ПАСПОРТ ЗАЧЁТКИ -->
+  <section class="card">
+    <div class="card-head">
+      <span class="tag">Зачётная книжка</span>
+      <span class="dot" aria-hidden="true"></span>
+    </div>
+
+    <div class="student-grid">
+      <div class="field">
+        <span class="field-label">Номер</span>
+        <span class="field-value mono">260135</span>
+      </div>
+      <div class="field">
+        <span class="field-label">Группа</span>
+        <span class="field-value">ХХ-126</span>
+      </div>
+      <div class="field field-full">
+        <span class="field-label">ФИО</span>
+        <span class="field-value">Семина Юлия Вячеславовна</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЭКЗАМЕНЫ -->
+  <section class="section">
+    <div class="section-head">
+      <h2>Экзамен</h2>
+      <span>4 из 4</span>
+    </div>
+    <ul class="list">
+      <li class="row">
+        <span class="idx">1</span>
+        <span class="row-title">Неорганическая химия</span>
+        <span class="grade grade-4">4</span>
+      </li>
+      <li class="row">
+        <span class="idx">2</span>
+        <span class="row-title">Начертательная геометрия. Инженерная и компьютерная графика</span>
+        <span class="grade grade-4">4</span>
+      </li>
+      <li class="row">
+        <span class="idx">3</span>
+        <span class="row-title">Введение в технику экспериментальных исследований</span>
+        <span class="grade grade-5">5</span>
+      </li>
+      <li class="row">
+        <span class="idx">4</span>
+        <span class="row-title">Физика</span>
+        <span class="grade grade-4">4</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ЗАЧЁТЫ -->
+  <section class="section">
+    <div class="section-head">
+      <h2>Зачёт</h2>
+      <span>6 из 6</span>
+    </div>
+    <ul class="list">
+      <li class="row">
+        <span class="idx idx-check">✓</span>
+        <span class="row-title">Основы российской государственности</span>
+        <span class="pill">зачёт</span>
+      </li>
+      <li class="row">
+        <span class="idx idx-check">✓</span>
+        <span class="row-title">История России</span>
+        <span class="pill">зачёт</span>
+      </li>
+      <li class="row">
+        <span class="idx idx-check">✓</span>
+        <span class="row-title">Математика</span>
+        <span class="pill">зачёт</span>
+      </li>
+      <li class="row">
+        <span class="idx idx-check">✓</span>
+        <span class="row-title">Введение в профессию</span>
+        <span class="pill">зачёт</span>
+      </li>
+      <li class="row">
+        <span class="idx idx-check">✓</span>
+        <span class="row-title">Иностранный язык</span>
+        <span class="pill">зачёт</span>
+      </li>
+      <li class="row">
+        <span class="idx idx-check">✓</span>
+        <span class="row-title">Физическая культура и спорт</span>
+        <span class="pill">зачёт</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ИТОГ -->
+  <div class="summary">
+    <div class="summary-icon">✓</div>
+    <div class="summary-text">
+      <div class="summary-title">Всё сдано</div>
+      <div class="summary-sub">Сессия закрыта · задолженностей нет</div>
+    </div>
+  </div>
+
+  <!-- ТЕМЫ -->
+  <div class="themes" role="group" aria-label="Цветовая тема">
+    <button data-set="classic"  style="--sw:#4f7cff" aria-pressed="true"  aria-label="Classic"></button>
+    <button data-set="ocean"    style="--sw:#2dd4bf" aria-pressed="false" aria-label="Ocean"></button>
+    <button data-set="violet"   style="--sw:#a855f7" aria-pressed="false" aria-label="Violet"></button>
+    <button data-set="sakura"   style="--sw:#f472b6" aria-pressed="false" aria-label="Sakura"></button>
+    <button data-set="forest"   style="--sw:#34d399" aria-pressed="false" aria-label="Forest"></button>
+    <button data-set="sunset"   style="--sw:#fb923c" aria-pressed="false" aria-label="Sunset"></button>
+    <button data-set="graphite" style="--sw:#94a3b8" aria-pressed="false" aria-label="Graphite"></button>
+    <button data-set="light"    style="--sw:#cbd5e1" aria-pressed="false" aria-label="Light"></button>
+  </div>
+
+  <div class="footnote">Kosygo · virtual record book</div>
+
+</main>
+
+<script>
+  const buttons = document.querySelectorAll('.themes button');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.documentElement.dataset.theme = btn.dataset.set;
+      buttons.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    });
+  });
+</script>
+
+</body>
+</html>
