@@ -120,6 +120,7 @@
   .app > *:nth-child(5){ animation-delay:.21s }
   .app > *:nth-child(6){ animation-delay:.26s }
   .app > *:nth-child(7){ animation-delay:.31s }
+  .app > *:nth-child(8){ animation-delay:.36s }
 
   @keyframes rise{
     from{ opacity:0; transform:translateY(14px) }
@@ -302,6 +303,43 @@
   .summary-title{ font-size:15px; font-weight:700; letter-spacing:-.01em }
   .summary-sub{ margin-top:3px; font-size:12px; color:var(--muted) }
 
+  /* ---------- ПАНЕЛЬ ДЕЙСТВИЙ ---------- */
+  .actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:22px;
+  }
+  .actions button{
+    display:flex; align-items:center; justify-content:center; gap:7px;
+    padding:12px 10px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--text);
+    font-family:inherit;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:.02em;
+    cursor:pointer;
+    transition:transform .15s ease, background .2s ease, border-color .2s ease;
+  }
+  .actions button:hover{
+    background:var(--surface-2);
+    border-color:var(--border-strong);
+    transform:translateY(-1px);
+  }
+  .actions button:active{ transform:translateY(0) scale(.98) }
+  .actions button .ico{ font-size:14px; opacity:.85 }
+  .actions button.danger{
+    color:var(--accent);
+    background:var(--accent-soft);
+    border-color:transparent;
+  }
+  .actions button.danger:hover{
+    border-color:var(--accent);
+  }
+
   /* ---------- ПЕРЕКЛЮЧАТЕЛЬ ТЕМ ---------- */
   .themes{
     display:flex; flex-wrap:wrap; justify-content:center; gap:10px;
@@ -331,6 +369,85 @@
     font-size:10.5px; letter-spacing:.16em; text-transform:uppercase;
     color:var(--muted); opacity:.55;
   }
+
+  /* ---------- МОДАЛКА ---------- */
+  .modal{
+    position:fixed; inset:0; z-index:100;
+    display:grid; place-items:center;
+    padding:20px;
+    opacity:0; pointer-events:none;
+    transition:opacity .25s ease;
+  }
+  .modal.open{ opacity:1; pointer-events:auto; }
+
+  .modal-backdrop{
+    position:absolute; inset:0;
+    background:rgba(0,0,0,.55);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+  }
+
+  .modal-card{
+    position:relative;
+    width:100%; max-width:340px;
+    padding:30px 24px 22px;
+    border-radius:22px;
+    background:var(--bg);
+    border:1px solid var(--border-strong);
+    text-align:center;
+    transform:translateY(14px) scale(.94);
+    transition:transform .3s cubic-bezier(.2,.7,.3,1);
+    box-shadow:0 30px 80px -20px rgba(0,0,0,.7);
+    overflow:hidden;
+  }
+  .modal-card::before{
+    content:''; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 0%, var(--glow), transparent 60%);
+    opacity:.35;
+  }
+  .modal.open .modal-card{ transform:none; }
+
+  .modal-icon{
+    position:relative; z-index:1;
+    width:52px; height:52px; margin:0 auto 14px;
+    display:grid; place-items:center;
+    border-radius:50%;
+    background:var(--accent-soft);
+    color:var(--accent);
+    font-size:22px;
+    border:1px solid var(--border-strong);
+  }
+
+  .modal-card h3{
+    position:relative; z-index:1;
+    font-size:17px; font-weight:700; letter-spacing:-.01em;
+    line-height:1.3;
+  }
+  .modal-card p{
+    position:relative; z-index:1;
+    margin-top:9px;
+    font-size:13px; line-height:1.55;
+    color:var(--muted);
+  }
+
+  .modal-close{
+    position:relative; z-index:1;
+    margin-top:22px;
+    width:100%;
+    padding:13px;
+    border-radius:12px;
+    border:none;
+    background:var(--accent);
+    color:var(--accent-contrast);
+    font-family:inherit;
+    font-size:13px; font-weight:700;
+    letter-spacing:.02em;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .2s ease;
+    box-shadow:0 0 24px var(--glow);
+  }
+  .modal-close:hover{ transform:translateY(-1px) }
+  .modal-close:active{ transform:translateY(0) scale(.98) }
 
   @media (prefers-reduced-motion: reduce){
     *, *::before, *::after{
@@ -452,8 +569,24 @@
     <div class="summary-icon">✓</div>
     <div class="summary-text">
       <div class="summary-title">Всё сдано</div>
-      <div class="summary-sub">Сессия закрыта · задолженностей нет</div>
+      <div class="summary-sub">Средний балл 4.25 · задолженностей нет</div>
     </div>
+  </div>
+
+  <!-- ПАНЕЛЬ ДЕЙСТВИЙ -->
+  <div class="actions">
+    <button data-action="Настройки">
+      <span class="ico">⚙</span> Настройки
+    </button>
+    <button data-action="Профиль">
+      <span class="ico">👤</span> Профиль
+    </button>
+    <button data-action="Экспорт зачётки">
+      <span class="ico">📄</span> Экспорт
+    </button>
+    <button data-action="Выход из системы" class="danger">
+      <span class="ico">↪</span> Выйти
+    </button>
   </div>
 
   <!-- ТЕМЫ -->
@@ -472,13 +605,63 @@
 
 </main>
 
+<!-- МОДАЛКА -->
+<div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card">
+    <div class="modal-icon">⚙</div>
+    <h3 id="modal-title">Сайт временно не работает</h3>
+    <p id="modal-text">Раздел на техническом обслуживании. Загляните чуть позже.</p>
+    <button class="modal-close" type="button" data-close>Понятно</button>
+  </div>
+</div>
+
 <script>
-  const buttons = document.querySelectorAll('.themes button');
-  buttons.forEach(btn => {
+  /* ---------- ТЕМЫ ---------- */
+  const themeButtons = document.querySelectorAll('.themes button');
+  themeButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       document.documentElement.dataset.theme = btn.dataset.set;
-      buttons.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+      themeButtons.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
     });
+  });
+
+  /* ---------- МОДАЛКА ---------- */
+  const modal      = document.getElementById('modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalText  = document.getElementById('modal-text');
+  const modalIcon  = modal.querySelector('.modal-icon');
+
+  const icons = {
+    'Настройки': '⚙',
+    'Профиль': '👤',
+    'Экспорт зачётки': '📄',
+    'Выход из системы': '↪'
+  };
+
+  function openModal(action){
+    modalIcon.textContent = icons[action] || '⚙';
+    modalTitle.textContent = 'Сайт временно не работает';
+    modalText.textContent = `Раздел «${action}» на техническом обслуживании. Загляните чуть позже.`;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeModal(){
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  document.querySelectorAll('.actions button').forEach(btn => {
+    btn.addEventListener('click', () => openModal(btn.dataset.action));
+  });
+
+  modal.querySelectorAll('[data-close]').forEach(el => {
+    el.addEventListener('click', closeModal);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
   });
 </script>
 
